@@ -3,7 +3,7 @@
 use std::ops;
 use std::fmt;
 
-// #[derive(Debug)]
+
 pub struct Vec3 {
     pub x: f64,
     pub y: f64,
@@ -12,7 +12,7 @@ pub struct Vec3 {
 
 // Métodos
 impl Vec3 {
-    // "Construtor". Chama-se Vec3::new(x, y) para se criar um novo vetor
+    // "Construtor". Chama-se Vec3::new(x, y, z) para se criar um novo vetor
     pub fn new(x: f64, y: f64, z: f64) -> Self {
         Vec3 { x: x, y: y, z: z }
     }
@@ -27,7 +27,7 @@ impl Vec3 {
     }
 
     // Rotacionar em radianos. Utiliza matriz de rotação
-    // REFATORAR!
+    // REFATORAR! UTILIZAR MATRIZ DE ROTAÇÃO EM R3 OU (SUGESTÃO) ROTAÇÃO UTILIZANDO QUATERNIÕES
     pub fn rotate(&mut self, theta_rad: f64) {
         // variáveis cos e sin para evitar computações extras
         let cos = f64::cos(theta_rad);
@@ -49,7 +49,7 @@ impl Vec3 {
 impl ops::Add<Vec3> for Vec3 {
     type Output = Self;
 
-    fn add(self, other: Self) -> Self {
+    fn add(self, other: Self) -> Self::Output {
         Self { 
             x: self.x + other.x,
             y: self.y + other.y,
@@ -62,7 +62,7 @@ impl ops::Add<Vec3> for Vec3 {
 impl ops::Sub<Vec3> for Vec3 {
     type Output = Self;
 
-    fn sub(self, other: Self) -> Self {
+    fn sub(self, other: Self) -> Self::Output {
         Self { 
             x: self.x - other.x,
             y: self.y - other.y,
@@ -75,7 +75,7 @@ impl ops::Sub<Vec3> for Vec3 {
 impl ops::Neg for Vec3 {
     type Output = Self;
 
-    fn neg(self) -> Self {
+    fn neg(self) -> Self::Output {
         Self { 
             x: -self.x,
             y: -self.y,
@@ -84,12 +84,12 @@ impl ops::Neg for Vec3 {
     }
 }
 
-// Sobrecarga do operador de multiplicação "*"
+// Sobrecarga do operador de multiplicação "*" entre vetores
 // Produto vetorial
 impl ops::Mul<Vec3> for Vec3 {
     type Output = Self;
 
-    fn mul(self, other: Self) -> Self {
+    fn mul(self, other: Self) -> Self::Output {
         Self { 
             x: self.y * other.z - other.y * self.z,
             y: self.x * other.z - self.z * other.x,
@@ -98,14 +98,40 @@ impl ops::Mul<Vec3> for Vec3 {
     }
 }
 
-// Implementação da trait Display
+// Sobrecarga do operador de multiplicação "*" entre vetor e f64
+impl ops::Mul<f64> for Vec3 {
+    type Output = Self;
+
+    fn mul(self, n: f64) -> Self::Output {
+        Self { 
+            x: self.x * n,
+            y: self.y * n,
+            z: self.z * n,
+        }
+    }
+}
+
+// Sobrecarga do operador de divisão "/" entre vetor e f64
+impl ops::Div<f64> for Vec3 {
+    type Output = Self;
+
+    fn div(self, n: f64) -> Self::Output {
+        Self { 
+            x: self.x / n,
+            y: self.y / n,
+            z: self.z / n,
+        }
+    }
+}
+
+// Implementação da trait Display (println!)
 impl fmt::Display for Vec3 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "({:.4}, {:.4})", self.x, self.y)
     }
 }
 
-// Implementação da trait Debug
+// Implementação da trait Debug (dbg!)
 impl fmt::Debug for Vec3 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "({:.4}, {:.4})", self.x, self.y)
